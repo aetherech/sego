@@ -382,6 +382,13 @@ function setupParticlesCardFlip() {
         if (!card || !gallery.contains(card)) return;
         activeCard = activeCard === card ? null : card;
         syncPressedState();
+
+        // Pause the marquee while a card is flipped; resume when showing image.
+        if (activeCard) {
+            gallery.classList.add('is-paused');
+        } else {
+            gallery.classList.remove('is-paused');
+        }
     });
 }
 
