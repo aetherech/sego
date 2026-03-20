@@ -40,7 +40,7 @@ body {
     height: 100dvh;
     overflow-y: auto;
     scroll-snap-type: y mandatory;
-    scroll-behavior: smooth;
+    scroll-behavior: auto;
 }
 
 .panel {
@@ -564,9 +564,10 @@ body {
     animation-play-state: running;
 }
 
-#particles.is-active .particles-carousel:hover .particles-gallery {
+#particles.is-active .particles-gallery.is-paused {
     animation-play-state: paused;
 }
+
 
 .particle-showcase-card {
     position: relative;
@@ -625,9 +626,7 @@ body {
     gap: 0.3rem;
     min-height: 0;
     padding: 1.3rem 1.15rem;
-    background:
-        linear-gradient(180deg, rgba(22, 22, 22, 0.2) 0%, rgba(10, 10, 10, 0.95) 100%),
-        radial-gradient(120% 100% at 50% 0%, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0) 56%);
+    background: #0a0a0a;
     border: 1px solid rgba(255, 255, 255, 0.12);
     box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
     transform: rotateY(180deg);
@@ -972,9 +971,9 @@ body {
     }
 
     .particle-showcase-card {
-        flex: 0 0 clamp(220px, 62vw, 280px);
-        width: clamp(220px, 62vw, 280px);
-        min-width: clamp(220px, 62vw, 280px);
+        flex: 0 0 clamp(180px, 52vw, 240px);
+        width: clamp(180px, 52vw, 240px);
+        min-width: clamp(180px, 52vw, 240px);
     }
 
     .particle-showcase-card.is-duplicate {
@@ -1076,9 +1075,9 @@ body {
     }
 
     .particle-showcase-card {
-        flex: 0 0 clamp(200px, 58vw, 260px);
-        width: clamp(200px, 58vw, 260px);
-        min-width: clamp(200px, 58vw, 260px);
+        flex: 0 0 clamp(160px, 48vw, 210px);
+        width: clamp(160px, 48vw, 210px);
+        min-width: clamp(160px, 48vw, 210px);
     }
 
     .particle-card-face-back {
