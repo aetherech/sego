@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sego - Pure, harmonious expression</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Lora:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="stylesheet.css">
+</head>
+<body>
+    <nav class="nav">
+        <div class="logo">SEGO</div>
+    </nav>
+
+    <main id="scroll">
+        <section class="panel" id="vortex">
+            <canvas id="vortexCanvas" class="panel-canvas"></canvas>
+            <div id="vortexFallback" class="fallback-stars"></div>
+            <div class="panel-overlay vignette vortex-focus"></div>
+            <div class="hero-content">
+                <h1 class="hero-title">SEGO<sup>©</sup></h1>
+            </div>
+        </section>
+
+        <section class="panel" id="floating">
+            <div class="panel-overlay vignette"></div>
+            <div class="floating-stage" id="floatingStage">
+                <div class="floating-scene">
+                    <div class="floating-cards">
+                        <article class="floating-item fi-1"><img crossorigin="anonymous" alt="Landed card 1"></article>
+                        <article class="floating-item fi-2"><img crossorigin="anonymous" alt="Landed card 2"></article>
+                        <article class="floating-item fi-3"><img crossorigin="anonymous" alt="Landed card 3"></article>
+                        <article class="floating-item fi-4"><img crossorigin="anonymous" alt="Landed card 4"></article>
+                        <article class="floating-item fi-5"><img crossorigin="anonymous" alt="Landed card 5"></article>
+                        <article class="floating-item fi-6"><img crossorigin="anonymous" alt="Landed card 6"></article>
+                        <article class="floating-item fi-7"><img crossorigin="anonymous" alt="Landed card 7"></article>
+                        <article class="floating-item fi-8 landscape"><img crossorigin="anonymous" alt="Landed card 8"></article>
+                        <article class="floating-item fi-9"><img crossorigin="anonymous" alt="Landed card 9"></article>
+                    </div>
+                    <article class="floating-quote">
+                        "I am always doing things I can't do; that's how I get to do them." — Picasso
+                    </article>
+                    <div class="floating-center">
+                        <h2 class="floating-title">This is my<br>creative universe</h2>
+                        <div class="floating-subline">
+                            <span>One home to save</span>
+                            <span class="floating-pill">quotes</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="panel" id="particles">
+            <canvas id="particlesCanvas" class="panel-canvas"></canvas>
+            <div id="particlesFallback" class="fallback-stars"></div>
+            <div class="panel-overlay vignette"></div>
+            <div class="particles-content">
+                <div class="particles-inner">
+                    <h2>A calm sphere of thought</h2>
+                    <p>
+                        Twinkling particles drift in a quiet constellation.<br>
+                        Drag to rotate the field while this section is active.
+                    </p>
+                </div>
+                <div class="particles-carousel">
+                    <div class="particles-gallery" data-gallery-source="lesego-content"></div>
+                </div>
+            </div>
+            <footer class="site-footer">Designed by Monde Mkhize</footer>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+    <script src="vortex.js"></script>
+</body>
+</html>
