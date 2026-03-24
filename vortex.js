@@ -131,29 +131,100 @@ function setupFloatingCards() {
     }
 }
 
-function setupFloatingCardFlip() {
-    const panel = document.getElementById('floating');
-    const items = Array.from(panel.querySelectorAll('.floating-item'));
-    if (!items.length) return;
-    let activeItem = null;
+// ─── Shared Card Expand Overlay ────────────────────────────────────
+let _cardExpandOverlay = null;
+let _cardExpandPausedGallery = null;
 
-    function syncState() {
-        for (let i = 0; i < items.length; i += 1) {
-            const isActive = items[i] === activeItem;
-            items[i].classList.toggle('is-flipped', isActive);
+function getCardExpandOverlay() {
+    if (_cardExpandOverlay) return _cardExpandOverlay;
+    const overlay = document.createElement('div');
+    overlay.id = 'cardExpandOverlay';
+    overlay.className = 'card-expand-overlay';
+    overlay.setAttribute('role', 'dialog');
+    overlay.setAttribute('aria-modal', 'true');
+    overlay.setAttribute('aria-hidden', 'true');
+    overlay.innerHTML = [
+        '<div class="card-expand-backdrop"></div>',
+        '<div class="card-expand-modal">',
+        '  <button class="card-expand-close" aria-label="Close">&#x2715;</button>',
+        '  <div class="card-expand-image-wrap">',
+        '    <img class="card-expand-image" src="" alt="" crossorigin="anonymous">',
+        '  </div>',
+        '  <div class="card-expand-body">',
+        '    <span class="card-expand-kicker"></span>',
+        '    <h2 class="card-expand-title"></h2>',
+        '    <span class="card-expand-meta"></span>',
+        '    <p class="card-expand-copy"></p>',
+        '  </div>',
+        '</div>'
+    ].join('');
+    document.body.appendChild(overlay);
+    _cardExpandOverlay = overlay;
+
+    function closeExpand() {
+        overlay.classList.remove('is-open');
+        overlay.setAttribute('aria-hidden', 'true');
+        document.documentElement.style.overflow = '';
+        document.body.style.overflow = '';
+        if (_cardExpandPausedGallery) {
+            _cardExpandPausedGallery.classList.remove('is-paused');
+            _cardExpandPausedGallery = null;
         }
     }
 
-    for (let i = 0; i < items.length; i += 1) {
-        items[i].addEventListener('click', () => {
-            activeItem = activeItem === items[i] ? null : items[i];
-            syncState();
-        });
+    overlay.querySelector('.card-expand-backdrop').addEventListener('click', closeExpand);
+    overlay.querySelector('.card-expand-close').addEventListener('click', closeExpand);
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && overlay.classList.contains('is-open')) closeExpand();
+    });
+
+    return overlay;
+}
+
+function openCardExpand(opts) {
+    const overlay = getCardExpandOverlay();
+    overlay.querySelector('.card-expand-image').src = opts.imageSrc || '';
+    overlay.querySelector('.card-expand-image').alt = opts.imageAlt || opts.title || '';
+    overlay.querySelector('.card-expand-kicker').textContent = opts.kicker || '';
+    overlay.querySelector('.card-expand-title').textContent = opts.title || '';
+    overlay.querySelector('.card-expand-meta').textContent = opts.meta || '';
+    overlay.querySelector('.card-expand-copy').textContent = opts.copy || '';
+    overlay.querySelector('.card-expand-modal').scrollTop = 0;
+    overlay.querySelector('.card-expand-body').scrollTop = 0;
+    document.documentElement.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden';
+    if (opts.gallery) {
+        opts.gallery.classList.add('is-paused');
+        _cardExpandPausedGallery = opts.gallery;
     }
+    overlay.setAttribute('aria-hidden', 'false');
+    overlay.classList.add('is-open');
+}
+
+function setupFloatingCardExpand() {
+    const panel = document.getElementById('floating');
+    if (!panel) return;
+    const items = Array.from(panel.querySelectorAll('.floating-item'));
+    if (!items.length) return;
+    items.forEach(function (item, i) {
+        const content = floatingCardContent[i % floatingCardContent.length];
+        item.addEventListener('click', function () {
+            const img = item.querySelector('.floating-card-media img') || item.querySelector('img');
+            openCardExpand({
+                imageSrc: img ? img.src : '',
+                imageAlt: content.title,
+                kicker: 'Sego Note',
+                title: content.title,
+                meta: content.meta,
+                copy: content.copy
+            });
+        });
+    });
 }
 
 setupFloatingCards();
-setupFloatingCardFlip();
+setupFloatingCardExpand();
+
 
 function escapeHtml(value) {
     return String(value).replace(/[&<>"']/g, (char) => {
@@ -361,39 +432,35 @@ function setupParticlesCarousel() {
     window.addEventListener('resize', updateMarqueeShift, { passive: true });
 }
 
-function setupParticlesCardFlip() {
+function setupParticlesCardExpand() {
     const particlesPanel = document.getElementById('particles');
-    const gallery = particlesPanel?.querySelector('.particles-gallery');
+    const gallery = particlesPanel ? particlesPanel.querySelector('.particles-gallery') : null;
     if (!gallery) return;
 
-    let activeCard = null;
-
-    function syncPressedState() {
-        const cards = Array.from(gallery.querySelectorAll('.particle-showcase-card'));
-        for (let i = 0; i < cards.length; i += 1) {
-            const isActive = cards[i] === activeCard;
-            cards[i].classList.toggle('is-flipped', isActive);
-            cards[i].setAttribute('aria-pressed', isActive ? 'true' : 'false');
-        }
-    }
-
-    gallery.addEventListener('click', (event) => {
+    gallery.addEventListener('click', function (event) {
         const card = event.target.closest('.particle-showcase-card');
         if (!card || !gallery.contains(card)) return;
-        activeCard = activeCard === card ? null : card;
-        syncPressedState();
-
-        // Pause the marquee while a card is flipped; resume when showing image.
-        if (activeCard) {
-            gallery.classList.add('is-paused');
-        } else {
-            gallery.classList.remove('is-paused');
-        }
+        const img = card.querySelector('.particle-showcase-media img');
+        const kicker = (card.querySelector('.particle-showcase-back-kicker') || {}).textContent || '';
+        const title = (card.querySelector('.particle-showcase-back-title') || {}).textContent || '';
+        const metaEl = card.querySelector('.particle-showcase-back-meta');
+        const meta = metaEl ? metaEl.textContent.trim() : '';
+        const copy = (card.querySelector('.particle-showcase-back-copy') || {}).textContent || '';
+        openCardExpand({
+            imageSrc: img ? img.src : '',
+            imageAlt: title,
+            kicker: kicker,
+            title: title,
+            meta: meta,
+            copy: copy,
+            gallery: gallery
+        });
     });
 }
 
 setupParticlesCarousel();
-setupParticlesCardFlip();
+setupParticlesCardExpand();
+
 
 function addRoundedPath(ctx, width, height, radius) {
     ctx.beginPath();
