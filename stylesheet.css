@@ -24,7 +24,8 @@ body {
     font-family: 'Lora', serif;
     background: var(--bg-primary);
     color: var(--text-primary);
-    overflow: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
     position: relative;
     width: 100%;
 }
@@ -257,7 +258,7 @@ body {
     transition: opacity 0.32s ease;
 }
 
-#floating.is-active .floating-stage {
+#floating.active .floating-stage {
     opacity: 1;
 }
 
